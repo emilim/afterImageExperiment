@@ -46,8 +46,7 @@ namespace koenderink_experiment
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
-            
-            radius = (Width + Height) / 8;
+            radius = (Width + Height) / 7;
             x = Width / 3 - (radius/2);
             y = Height / 2 - (radius/2);
 
@@ -69,7 +68,16 @@ namespace koenderink_experiment
             using (Font myFont = new Font("Arial", 14))
             {
                 e.Graphics.DrawString(seconds.ToString(), myFont, Brushes.Black, new Point(2, 2));
-                e.Graphics.DrawString(huesExperimental[selected - 1].ToString(), myFont, Brushes.Black, new Point(2, 50));
+                //e.Graphics.DrawString(huesExperimental[selected - 1].ToString(), myFont, Brushes.Black, new Point(2, 50));
+                e.Graphics.DrawString("Prova N: "+selected.ToString(), myFont, Brushes.Black, new Point(2, 30));
+
+                e.Graphics.DrawString("Inducer, predict, experiment", myFont, Brushes.Black, new Point(2, 70));
+                for (int i = 0; i < n; i++)
+                {
+                    e.Graphics.DrawString(((int)hues[i]).ToString(), myFont, Brushes.Black, new Point(2, 100 + i * 20));
+                    e.Graphics.DrawString(((int)huesPredicted[i]).ToString(), myFont, Brushes.Black, new Point(90, 100 + i * 20));
+                    e.Graphics.DrawString(((int)huesExperimental[i]).ToString(), myFont, Brushes.Black, new Point(180, 100 + i * 20));
+                }
             }
         }
 
@@ -82,11 +90,11 @@ namespace koenderink_experiment
         {
             if (e.KeyCode == Keys.Left && seconds > 10)
             {
-                hA -= 10;
+                hA -= 5;
             }
             if (e.KeyCode == Keys.Right && seconds > 10)
             {
-                hA += 10;
+                hA += 5;
             }            
             if (e.KeyCode == Keys.Up && seconds > 10)
             {
@@ -97,7 +105,7 @@ namespace koenderink_experiment
                 sA -= 10;
             }
             hA = hA % 360;
-            sA = sA % 360;
+            sA = sA % 100;
             
             if (e.KeyCode == Keys.Return && seconds > 10)
             {
@@ -149,7 +157,6 @@ namespace koenderink_experiment
         }
         public void randomColor()
         {
-
             if (selected < n+1)
             {
                 seconds = 0;
@@ -158,7 +165,6 @@ namespace koenderink_experiment
                 selected++;
             }
             else { saveCSV(); }
-            
         }
         public void saveCSV()
         {
