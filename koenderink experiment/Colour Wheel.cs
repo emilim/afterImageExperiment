@@ -18,6 +18,7 @@ namespace koenderink_experiment
 
         public Colour_Wheel(double[] hues, double[] huesPredicted, double[] huesExperimental, int n)
         {
+            n -= 1;
             InitializeComponent();
             this.hues = hues;
             this.huesPredicted = huesPredicted;
@@ -41,7 +42,7 @@ namespace koenderink_experiment
         {
             int cx = pictureBox1.Width / 2, cy = pictureBox1.Height / 2;
             
-            int thickness = 50;
+            int thickness = 20;
             var arcLength = n != 0 ? 360 / n : 1;
 
             int innerR = (pictureBox1.Width + pictureBox1.Height)/10;
@@ -63,7 +64,7 @@ namespace koenderink_experiment
                 var colorHues = ColorFromHSV(hues[i], 100, 100);
                 var colorHuesPredicted = ColorFromHSV(huesPredicted[i], 100, 100);
                 var colorHuesExperimental = ColorFromHSV(huesExperimental[i], 100, 100);
-                
+
                 float startAngle = (float)hues[i];
 
                 using (var p = new GraphicsPath())

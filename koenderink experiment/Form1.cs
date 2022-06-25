@@ -1,4 +1,4 @@
-using Microsoft.VisualBasic;
+//using Microsoft.VisualBasic;
 using System.Text;
 
 namespace koenderink_experiment
@@ -11,6 +11,8 @@ namespace koenderink_experiment
         int n, selected;
         double[] hues, huesPredicted, huesExperimental;
         double[,] lms, suppLMS, expLMS;
+        int[] lut;
+        int i = 0;
 
         System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
         int seconds;
@@ -20,16 +22,29 @@ namespace koenderink_experiment
         {
             InitializeComponent();
             t.Interval = 1000;
-            t.Enabled = true;
+            t.Enabled = false;
             t.Tick += new EventHandler(timer1_Tick);
         }
         private void initialize()
         {
+            ShowInputDialog(ref n);
+            t.Enabled = true;
             s = 100;
             v = 100;
             sA = s;
             vA = v;
-            n = Int32.Parse(Interaction.InputBox("How many afterimages you want to see?", "Experiment number sample", "10"));
+
+            //n = Int32.Parse(Interaction.InputBox("How many afterimages you want to see?", "Experiment number sample", "10"));
+            
+            lut = new int[n];
+            int c = 0;
+            Random r = new Random();
+            foreach (int i in Enumerable.Range(0, n).OrderBy(x => r.Next()))
+            {
+                lut[c] = i;
+                c++;
+            }
+            selected = lut[i];
             hues = new double[n + 1];
             huesPredicted = new double[n + 1];
             huesExperimental = new double[n + 1];
@@ -62,6 +77,44 @@ namespace koenderink_experiment
             //hues = hues.OrderBy(x => r).ToArray();
             //huesPredicted = huesPredicted.OrderBy(x => r).ToArray();
         }
+        private static DialogResult ShowInputDialog(ref int input)
+        {
+            System.Drawing.Size size = new System.Drawing.Size(200, 70);
+            Form inputBox = new Form();
+
+            inputBox.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            inputBox.ClientSize = size;
+            inputBox.Text = "Name";
+
+            System.Windows.Forms.TextBox textBox = new TextBox();
+            textBox.Size = new System.Drawing.Size(size.Width - 10, 23);
+            textBox.Location = new System.Drawing.Point(5, 5);
+            textBox.Text = input.ToString();
+            inputBox.Controls.Add(textBox);
+
+            Button okButton = new Button();
+            okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+            okButton.Name = "okButton";
+            okButton.Size = new System.Drawing.Size(75, 23);
+            okButton.Text = "&OK";
+            okButton.Location = new System.Drawing.Point(size.Width - 80 - 80, 39);
+            inputBox.Controls.Add(okButton);
+
+            Button cancelButton = new Button();
+            cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            cancelButton.Name = "cancelButton";
+            cancelButton.Size = new System.Drawing.Size(75, 23);
+            cancelButton.Text = "&Cancel";
+            cancelButton.Location = new System.Drawing.Point(size.Width - 80, 39);
+            inputBox.Controls.Add(cancelButton);
+
+            inputBox.AcceptButton = okButton;
+            inputBox.CancelButton = cancelButton;
+
+            DialogResult result = inputBox.ShowDialog();
+            input = int.Parse(textBox.Text);
+            return result;
+        }
 
         private void colourWheelToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -84,17 +137,23 @@ namespace koenderink_experiment
             ofd.ShowDialog();
             if (ofd.FileName != "")
             {
+                t.Enabled = true;
+                s = 100;
+                v = 100;
+                sA = s;
+                vA = v;
+                
                 string[] lines = System.IO.File.ReadAllLines(ofd.FileName);
                 string[] line = lines[0].Split(',');
-                n = line.Length - 1;
-                hues = new double[n + 1];
-                huesPredicted = new double[n + 1];
-                huesExperimental = new double[n + 1];
-                lms = new double[3, n + 1];
-                suppLMS = new double[3, n + 1];
-                expLMS = new double[3, n + 1];
+                n = lines.Length;
+                hues = new double[n - 1];
+                huesPredicted = new double[n - 1];
+                huesExperimental = new double[n - 1];
+                lms = new double[3, n - 1];
+                suppLMS = new double[3, n - 1];
+                expLMS = new double[3, n - 1];
                 int count = 0;
-                for (int i = 1; i < lines.Length; i++)
+                for (int i = 1; i < n; i++)
                 {
                     line = lines[i].Split(',');
                     hues[count] = double.Parse(line[0]);
@@ -111,6 +170,16 @@ namespace koenderink_experiment
                     expLMS[2, count] = double.Parse(line[11]);
                     count++;
                 }
+                lut = new int[n];
+                int c = 0;
+                Random r = new Random();
+                foreach (int i in Enumerable.Range(0, n-1).OrderBy(x => r.Next()))
+                {
+                    lut[c] = i;
+                    c++;
+                }
+                i = 0;
+                selected = lut[i];
                 randomColor();
             }
         }
@@ -123,31 +192,41 @@ namespace koenderink_experiment
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
-            radius = (Width + Height) / 7;
-            x = Width / 3 - (radius / 2);
-            y = Height / 2 - (radius / 2);
-
-            if (seconds <= 10)
+            if (t.Enabled == true)
             {
-                var image = ColorFromHSV(h, s, v);
-                e.Graphics.FillEllipse(new SolidBrush(image), x, y, radius, radius);
+                radius = (Width + Height) / 7;
+                x = Width / 3 - (radius / 2);
+                y = Height / 2 - (radius / 2);
+
+                if (seconds <= 10)
+                {
+                    var image = ColorFromHSV(h, s, v);
+                    e.Graphics.FillEllipse(new SolidBrush(image), x, y, radius, radius);
+                }
+
+                if (seconds > 10)
+                {
+                    e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(255, (byte)220, (byte)220, (byte)220)), x, y, radius, radius);
+
+                    var afterImage = new SolidBrush(ColorFromHSV(hA, sA, vA));
+                    e.Graphics.FillEllipse(afterImage, x + Width / 3, y, radius, radius);
+                }
+                e.Graphics.DrawLine(Pens.Black, Width / 2 - 20, Height / 2, Width / 2 + 20, Height / 2);
+                e.Graphics.DrawLine(Pens.Black, Width / 2, Height / 2 - 20, Width / 2, Height / 2 + 20);
+
+                using (Font myFont = new Font("Arial", 14))
+                {
+                    e.Graphics.DrawString(seconds.ToString(), myFont, Brushes.Black, new Point(2, 2));
+                    //e.Graphics.DrawString(huesExperimental[selected - 1].ToString(), myFont, Brushes.Black, new Point(2, 50));
+                    e.Graphics.DrawString("Prova N: " + (i + 1).ToString(), myFont, Brushes.Black, new Point(2, 30));
+                }
             }
-
-            if (seconds > 10)
+            else
             {
-                e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(255, (byte)220, (byte)220, (byte)220)), x, y, radius, radius);
-
-                var afterImage = new SolidBrush(ColorFromHSV(hA, sA, vA));
-                e.Graphics.FillEllipse(afterImage, x + Width / 3, y, radius, radius);
-            }
-            e.Graphics.DrawLine(Pens.Black, Width / 2 - 20, Height / 2, Width / 2 + 20, Height / 2);
-            e.Graphics.DrawLine(Pens.Black, Width / 2, Height / 2 - 20, Width / 2, Height / 2 + 20);
-
-            using (Font myFont = new Font("Arial", 14))
-            {
-                e.Graphics.DrawString(seconds.ToString(), myFont, Brushes.Black, new Point(2, 2));
-                //e.Graphics.DrawString(huesExperimental[selected - 1].ToString(), myFont, Brushes.Black, new Point(2, 50));
-                e.Graphics.DrawString("Prova N: " + selected.ToString(), myFont, Brushes.Black, new Point(2, 30));
+                using (Font myFont = new Font("Arial", 14))
+                {
+                    e.Graphics.DrawString("Create or load a new experiment from the menu", myFont, Brushes.Black, new Point(pictureBox1.Width/2-250, pictureBox1.Height/2));
+                }
             }
         }
 
@@ -306,24 +385,28 @@ namespace koenderink_experiment
         }
         public void saveImage()
         {
-            huesExperimental[selected - 1] = hA;
+            huesExperimental[selected] = hA;
 
             double[] tempLms = rgb2lms(ColorFromHSV(hA, sA, vA).R, ColorFromHSV(hA, sA, vA).G, ColorFromHSV(hA, sA, vA).B);
 
-            expLMS[0, selected - 1] = tempLms[0];
-            expLMS[1, selected - 1] = tempLms[1];
-            expLMS[2, selected - 1] = tempLms[2];
+            expLMS[0, selected] = tempLms[0];
+            expLMS[1, selected] = tempLms[1];
+            expLMS[2, selected] = tempLms[2];
+            i++;
+            selected = i < n ? lut[i] : selected;
         }
         public void randomColor()
         {
-            if (selected < n + 1)
+            if (i < n)
             {
                 seconds = 0;
                 h = hues[selected];
                 hA = huesPredicted[selected];
-                selected++;
             }
-            else { saveCSV(); }
+            else
+            {
+                saveCSV();
+            }
         }
         public void saveCSV()
         {
@@ -338,7 +421,7 @@ namespace koenderink_experiment
                 var csv = new StringBuilder();
                 csv.AppendLine("hue,predicted hue,experiment hue,long,medium,short,predL,predM,predS,expL,expM,expS");
 
-                for (int i = 0; i < n; i++)
+                for (int i = 0; i < n-1; i++)
                 {
                     var newLine = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}", (int)hues[i], (int)huesPredicted[i], (int)huesExperimental[i], (int)lms[0, i], (int)lms[1, i], (int)lms[2, i], (int)suppLMS[0, i], (int)suppLMS[1, i], (int)suppLMS[2, i], (int)expLMS[0, i], (int)expLMS[1, i], (int)expLMS[2, i]);
                     csv.AppendLine(newLine);
