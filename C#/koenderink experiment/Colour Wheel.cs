@@ -18,7 +18,6 @@ namespace koenderink_experiment
 
         public Colour_Wheel(double[] hues, double[] huesPredicted, double[] huesExperimental, int n)
         {
-            n -= 1;
             InitializeComponent();
             this.hues = hues;
             this.huesPredicted = huesPredicted;

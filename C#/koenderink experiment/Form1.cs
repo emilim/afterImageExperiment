@@ -194,25 +194,30 @@ namespace koenderink_experiment
         {
             if (t.Enabled == true)
             {
-                radius = (Width + Height) / 7;
-                x = Width / 3 - (radius / 2);
-                y = Height / 2 - (radius / 2);
+                radius = (pictureBox1.Width + pictureBox1.Height) / 7;
+                //x = Width / 3 - (radius / 2);
+                //y = Height / 2 - (radius / 2);
+                x = pictureBox1.Width / 2 - radius / 2;
+                y = pictureBox1.Height / 2 - radius / 2;
 
                 if (seconds <= 10)
                 {
                     var image = ColorFromHSV(h, s, v);
-                    e.Graphics.FillEllipse(new SolidBrush(image), x, y, radius, radius);
+                    //e.Graphics.FillRectangle(new SolidBrush(image), x, y, radius, radius);
+                    e.Graphics.FillPie(new SolidBrush(image), x, y, radius, radius, 90, 180);
                 }
 
                 if (seconds > 10)
                 {
-                    e.Graphics.FillEllipse(new SolidBrush(Color.FromArgb(255, (byte)220, (byte)220, (byte)220)), x, y, radius, radius);
+                    //e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(255, (byte)220, (byte)220, (byte)220)), x, y, radius, radius);
+                    e.Graphics.FillPie(new SolidBrush(Color.FromArgb(255, (byte)220, (byte)220, (byte)220)), x, y, radius, radius, 90, 180);
 
                     var afterImage = new SolidBrush(ColorFromHSV(hA, sA, vA));
-                    e.Graphics.FillEllipse(afterImage, x + Width / 3, y, radius, radius);
+                    //e.Graphics.FillRectangle(afterImage, x + Width / 3, y, radius, radius);
+                    e.Graphics.FillPie(afterImage, x, y, radius, radius, -90, 180);
                 }
-                e.Graphics.DrawLine(Pens.Black, Width / 2 - 20, Height / 2, Width / 2 + 20, Height / 2);
-                e.Graphics.DrawLine(Pens.Black, Width / 2, Height / 2 - 20, Width / 2, Height / 2 + 20);
+                //e.Graphics.DrawLine(Pens.Black, Width / 2 - 20, Height / 2, Width / 2 + 20, Height / 2);
+                //e.Graphics.DrawLine(Pens.Black, Width / 2, Height / 2 - 20, Width / 2, Height / 2 + 20);
 
                 using (Font myFont = new Font("Arial", 14))
                 {
@@ -254,7 +259,7 @@ namespace koenderink_experiment
                 sA -= 10;
             }
             hA = hA % 360;
-            sA = sA % 100 == 0 ? sA : sA % 100;
+            sA = sA % 100 == 0 ? sA : Math.Abs(sA % 100);
 
             if (e.KeyCode == Keys.Return && seconds > 10)
             {
@@ -295,6 +300,20 @@ namespace koenderink_experiment
             seconds++;
             pictureBox1.Invalidate();
         }
+        
+        private double Gauss(int x, double my, double sigma1, double sigma2)
+        {
+            double g = 0;
+            if (x < my)
+            {
+                g = Math.Exp(-(1 / 2) * Math.Pow(x - my, 2) / Math.Pow(sigma1, 2));
+            }
+            else if (x >= my)
+            {
+                g = Math.Exp(-(1 / 2) * Math.Pow(x - my, 2) / Math.Pow(sigma2, 2));
+            }   
+            return g;
+        }
 
         private double[] rgb2lms(double red, double green, double blue)
         {
@@ -305,15 +324,21 @@ namespace koenderink_experiment
             double[] R = new double[N];
             double[] G = new double[N];
             double[] B = new double[N];
+            
 
             double[] InputSpectrum = new double[N];
 
+            double[] g = new double[N];
+            
             for (int i = 0; i < N; i++)
             {
-                L[i] = 1.0 * Math.Exp(-((Math.Pow(i - 30, 2) / (2 * 150))));
+                /*L[i] = 1.0 * Math.Exp(-((Math.Pow(i - 30, 2) / (2 * 150))));
                 M[i] = 1.0 * Math.Exp(-((Math.Pow(i - 180, 2) / (2 * 350))));
                 M[i] += 0.3 * Math.Exp(-((Math.Pow(i - 230, 2) / (2 * 350))));
-                S[i] = 1.0 * Math.Exp(-((Math.Pow(i - 290, 2) / (2 * 650))));
+                S[i] = 1.0 * Math.Exp(-((Math.Pow(i - 290, 2) / (2 * 650))));*/
+                L[i] = 1.056 * Gauss(i, 599.8, 37.9, 31.0) + 0.362 * Gauss(i, 442.0, 16.0, 26.7) - 0.065 * Gauss(i, 501.1, 20.4, 26.2);
+                M[i] = 0.821 * Gauss(i, 568.8, 46.9, 40.5) + 0.286 * Gauss(i, 530.9, 16.3, 31.1);
+                S[i] = 1.217 * Gauss(i, 437.0, 11.8, 36.0) + 0.681 * Gauss(i, 459.0, 26.0, 13.8);
 
 
                 R[i] = red * Math.Exp(-((Math.Pow(i - 30, 2) / (2 * 150))));
@@ -421,7 +446,7 @@ namespace koenderink_experiment
                 var csv = new StringBuilder();
                 csv.AppendLine("hue,predicted hue,experiment hue,long,medium,short,predL,predM,predS,expL,expM,expS");
 
-                for (int i = 0; i < n-1; i++)
+                for (int i = 0; i < n; i++)
                 {
                     var newLine = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}", (int)hues[i], (int)huesPredicted[i], (int)huesExperimental[i], (int)lms[0, i], (int)lms[1, i], (int)lms[2, i], (int)suppLMS[0, i], (int)suppLMS[1, i], (int)suppLMS[2, i], (int)expLMS[0, i], (int)expLMS[1, i], (int)expLMS[2, i]);
                     csv.AppendLine(newLine);
