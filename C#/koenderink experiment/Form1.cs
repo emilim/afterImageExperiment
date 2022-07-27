@@ -212,7 +212,10 @@ namespace koenderink_experiment
                     //e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(255, (byte)220, (byte)220, (byte)220)), x, y, radius, radius);
                     e.Graphics.FillPie(new SolidBrush(Color.FromArgb(255, (byte)220, (byte)220, (byte)220)), x, y, radius, radius, 90, 180);
 
-                    var afterImage = new SolidBrush(ColorFromHSV(hA, sA, vA));
+                    // modify here RICCARDO MANZOTTI
+                    double[] rgbA = { ColorFromHSV(hA, sA, vA).R, ColorFromHSV(hA, sA, vA).G, ColorFromHSV(hA, sA, vA).B };
+                    var afterImage = new SolidBrush(Color.FromArgb(255, (byte)(220 - (rgbA[0] * 220 / 255)), (byte)(220 - (rgbA[1] * 220 / 255)), (byte)(220 - (rgbA[2] * 220 / 255))));
+                    //var afterImage = new SolidBrush(ColorFromHSV(hA, sA, vA));
                     //e.Graphics.FillRectangle(afterImage, x + Width / 3, y, radius, radius);
                     e.Graphics.FillPie(afterImage, x, y, radius, radius, -90, 180);
                 }
