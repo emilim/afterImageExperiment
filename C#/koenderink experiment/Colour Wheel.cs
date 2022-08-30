@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExcelDataReader;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,6 +16,42 @@ namespace koenderink_experiment
     {
         int n;
         double[] hues, huesPredicted, huesExperimental;
+        //DataSet ds;
+        private DataTable MakeNamesTable()
+        {
+            // Create a new DataTable titled 'Names.'
+            DataTable namesTable = new DataTable("Names");
+
+            // Add three column objects to the table.
+            DataColumn idColumn = new DataColumn();
+            idColumn.DataType = System.Type.GetType("System.Int32");
+            idColumn.ColumnName = "id";
+            idColumn.AutoIncrement = true;
+            namesTable.Columns.Add(idColumn);
+
+            DataColumn huesColumn = new DataColumn();
+            huesColumn.DataType = System.Type.GetType("System.Int32");
+            huesColumn.ColumnName = "hues";
+            namesTable.Columns.Add(huesColumn);
+
+            DataColumn huesPredictedColumn = new DataColumn();
+            huesPredictedColumn.DataType = System.Type.GetType("System.Int32");
+            huesPredictedColumn.ColumnName = "huesPredicted";
+            namesTable.Columns.Add(huesPredictedColumn);
+
+            DataColumn huesExperimental = new DataColumn();
+            huesExperimental.DataType = System.Type.GetType("System.Int32");
+            huesExperimental.ColumnName = "huesExperimental";
+            namesTable.Columns.Add(huesExperimental);
+
+            // Create an array for DataColumn objects.
+            DataColumn[] keys = new DataColumn[1];
+            keys[0] = idColumn;
+            namesTable.PrimaryKey = keys;
+
+            // Return the new DataTable.
+            return namesTable;
+        }
 
         public Colour_Wheel(double[] hues, double[] huesPredicted, double[] huesExperimental, int n)
         {
@@ -23,13 +60,39 @@ namespace koenderink_experiment
             this.huesPredicted = huesPredicted;
             this.huesExperimental = huesExperimental;
             this.n = n;
+            DataTable dt = MakeNamesTable();
 
-            richTextBox1.Clear();
-            richTextBox1.AppendText("| Inducer | predict | experiment |");
             for (int i = 0; i < n; i++)
             {
-                richTextBox1.AppendText("\r\n| " + ((int)hues[i]).ToString() + " | " + ((int)huesPredicted[i]).ToString() + " | " + ((int)huesExperimental[i]).ToString() + " | ");
+                DataRow row;
+                row = dt.NewRow();
+                row["hues"] = (int)hues[i];
+                row["huesPredicted"] = (int)huesPredicted[i];
+                row["huesExperimental"] = (int)huesExperimental[i];
+                dt.Rows.Add(row);
+
+
+                //dt.Rows.Add(hues[i].ToString());
             }
+            ResultGrid.DataSource = dt;
+            /*using (OpenFileDialog dialog = new OpenFileDialog())
+            {
+                dialog.Filter = "Excel Workbook|*.xls";
+                dialog.ValidateNames = true;
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    FileStream fileStream = File.Open(dialog.FileName, FileMode.Open, FileAccess.Read);
+                    IExcelDataReader reader = ExcelReaderFactory.CreateBinaryReader(fileStream);
+                    var result = reader.AsDataSet(new ExcelDataSetConfiguration()
+                    {
+                        ConfigureDataTable = (_) => new ExcelDataTableConfiguration()
+                        {
+                            UseHeaderRow = true
+                        }
+                    });
+                    ResultGrid.DataSource = result.Tables[0];
+                }
+            }*/
         }
 
         private void pictureBox1_Resize(object sender, EventArgs e)

@@ -1,4 +1,3 @@
-//using Microsoft.VisualBasic;
 using System.Text;
 
 namespace koenderink_experiment
