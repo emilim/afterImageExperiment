@@ -9,6 +9,7 @@ namespace koenderink_experiment
         double hA, sA, vA;
         int n, selected;
         double[] hues, huesPredicted, huesExperimental;
+        bool[] done;
         double[,] lms, suppLMS, expLMS;
         int[] lut;
         int i = 0;
@@ -47,6 +48,11 @@ namespace koenderink_experiment
             hues = new double[n + 1];
             huesPredicted = new double[n + 1];
             huesExperimental = new double[n + 1];
+            done = new bool[n + 1];
+            for (int i = 0; i < n + 1; i++)
+            {
+                done[i] = false;
+            }
 
             lms = new double[3, n + 1];
             suppLMS = new double[3, n + 1];
@@ -117,7 +123,7 @@ namespace koenderink_experiment
 
         private void colourWheelToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Colour_Wheel form2 = new Colour_Wheel(hues, huesPredicted, huesExperimental, n);
+            Colour_Wheel form2 = new Colour_Wheel(hues, huesPredicted, huesExperimental, done, n);
             form2.Tag = this;
             form2.Show(this);
         }
@@ -148,6 +154,7 @@ namespace koenderink_experiment
                 hues = new double[n - 1];
                 huesPredicted = new double[n - 1];
                 huesExperimental = new double[n - 1];
+                done = new bool[n - 1];
                 lms = new double[3, n - 1];
                 suppLMS = new double[3, n - 1];
                 expLMS = new double[3, n - 1];
@@ -158,6 +165,7 @@ namespace koenderink_experiment
                     hues[count] = double.Parse(line[0]);
                     huesPredicted[count] = double.Parse(line[1]);
                     huesExperimental[count] = double.Parse(line[2]);
+                    done[count] = bool.Parse(line[12]);
                     lms[0, count] = double.Parse(line[3]);
                     lms[1, count] = double.Parse(line[4]);
                     lms[2, count] = double.Parse(line[5]);
@@ -178,6 +186,15 @@ namespace koenderink_experiment
                     c++;
                 }
                 i = 0;
+                while (done[i] == true)
+                {
+                    i++;
+                    if (i >= n)
+                    {
+                        MessageBox.Show("All trials are done");
+                        break;
+                    }
+                }
                 selected = lut[i];
                 randomColor();
             }
@@ -193,7 +210,7 @@ namespace koenderink_experiment
         {
             if (t.Enabled == true)
             {
-                radius = (pictureBox1.Width + pictureBox1.Height) / 7;
+                radius = (pictureBox1.Width + pictureBox1.Height) / 4;
                 //x = Width / 3 - (radius / 2);
                 //y = Height / 2 - (radius / 2);
                 x = pictureBox1.Width / 2 - radius / 2;
@@ -209,12 +226,12 @@ namespace koenderink_experiment
                 if (seconds > 10)
                 {
                     //e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(255, (byte)220, (byte)220, (byte)220)), x, y, radius, radius);
-                    e.Graphics.FillPie(new SolidBrush(Color.FromArgb(255, (byte)220, (byte)220, (byte)220)), x, y, radius, radius, 90, 180);
+                    e.Graphics.FillPie(new SolidBrush(Color.FromArgb(255, (byte)200, (byte)200, (byte)200)), x, y, radius, radius, 90, 180);
 
                     // modify here RICCARDO MANZOTTI
                     double[] rgbA = { ColorFromHSV(hA, sA, vA).R, ColorFromHSV(hA, sA, vA).G, ColorFromHSV(hA, sA, vA).B };
-                    var afterImage = new SolidBrush(Color.FromArgb(255, (byte)(220 - (rgbA[0] * 220 / 255)), (byte)(220 - (rgbA[1] * 220 / 255)), (byte)(220 - (rgbA[2] * 220 / 255))));
-                    //var afterImage = new SolidBrush(ColorFromHSV(hA, sA, vA));
+                    //var afterImage = new SolidBrush(Color.FromArgb(255, (byte)(220 - (rgbA[0] * 220 / 255)), (byte)(220 - (rgbA[1] * 220 / 255)), (byte)(220 - (rgbA[2] * 220 / 255))));
+                    var afterImage = new SolidBrush(ColorFromHSV(hA, sA, vA));
                     //e.Graphics.FillRectangle(afterImage, x + Width / 3, y, radius, radius);
                     e.Graphics.FillPie(afterImage, x, y, radius, radius, -90, 180);
                 }
@@ -412,6 +429,7 @@ namespace koenderink_experiment
         }
         public void saveImage()
         {
+            done[i] = true;
             huesExperimental[selected] = hA;
 
             double[] tempLms = rgb2lms(ColorFromHSV(hA, sA, vA).R, ColorFromHSV(hA, sA, vA).G, ColorFromHSV(hA, sA, vA).B);
@@ -420,6 +438,15 @@ namespace koenderink_experiment
             expLMS[1, selected] = tempLms[1];
             expLMS[2, selected] = tempLms[2];
             i++;
+            while (done[i] == true)
+            {
+                i++;
+                if (i >= n)
+                {
+                    MessageBox.Show("All trials are done");
+                    break;
+                }
+            }
             selected = i < n ? lut[i] : selected;
         }
         public void randomColor()
@@ -446,11 +473,11 @@ namespace koenderink_experiment
                 var filePath = saveFileDialog1.FileName;
 
                 var csv = new StringBuilder();
-                csv.AppendLine("hue,predicted hue,experiment hue,long,medium,short,predL,predM,predS,expL,expM,expS");
+                csv.AppendLine("hue,predicted hue,experiment hue,long,medium,short,predL,predM,predS,expL,expM,expS,done");
 
                 for (int i = 0; i < n; i++)
                 {
-                    var newLine = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11}", (int)hues[i], (int)huesPredicted[i], (int)huesExperimental[i], (int)lms[0, i], (int)lms[1, i], (int)lms[2, i], (int)suppLMS[0, i], (int)suppLMS[1, i], (int)suppLMS[2, i], (int)expLMS[0, i], (int)expLMS[1, i], (int)expLMS[2, i]);
+                    var newLine = string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12}", (int)hues[i], (int)huesPredicted[i], (int)huesExperimental[i], (int)lms[0, i], (int)lms[1, i], (int)lms[2, i], (int)suppLMS[0, i], (int)suppLMS[1, i], (int)suppLMS[2, i], (int)expLMS[0, i], (int)expLMS[1, i], (int)expLMS[2, i], done[i]);
                     csv.AppendLine(newLine);
                 }
 

@@ -1,5 +1,4 @@
-﻿using ExcelDataReader;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,7 +15,7 @@ namespace koenderink_experiment
     {
         int n;
         double[] hues, huesPredicted, huesExperimental;
-        //DataSet ds;
+
         private DataTable MakeNamesTable()
         {
             // Create a new DataTable titled 'Names.'
@@ -44,6 +43,11 @@ namespace koenderink_experiment
             huesExperimental.ColumnName = "huesExperimental";
             namesTable.Columns.Add(huesExperimental);
 
+            DataColumn done = new DataColumn();
+            done.DataType = System.Type.GetType("System.Boolean");
+            done.ColumnName = "done";
+            namesTable.Columns.Add(done);
+
             // Create an array for DataColumn objects.
             DataColumn[] keys = new DataColumn[1];
             keys[0] = idColumn;
@@ -53,46 +57,26 @@ namespace koenderink_experiment
             return namesTable;
         }
 
-        public Colour_Wheel(double[] hues, double[] huesPredicted, double[] huesExperimental, int n)
+        public Colour_Wheel(double[] hues, double[] huesPredicted, double[] huesExperimental, bool[] done, int n)
         {
             InitializeComponent();
             this.hues = hues;
             this.huesPredicted = huesPredicted;
             this.huesExperimental = huesExperimental;
-            this.n = n;
+            this.n = n-1;
             DataTable dt = MakeNamesTable();
 
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < this.n; i++)
             {
                 DataRow row;
                 row = dt.NewRow();
                 row["hues"] = (int)hues[i];
                 row["huesPredicted"] = (int)huesPredicted[i];
                 row["huesExperimental"] = (int)huesExperimental[i];
+                row["done"] = done[i];
                 dt.Rows.Add(row);
-
-
-                //dt.Rows.Add(hues[i].ToString());
             }
             ResultGrid.DataSource = dt;
-            /*using (OpenFileDialog dialog = new OpenFileDialog())
-            {
-                dialog.Filter = "Excel Workbook|*.xls";
-                dialog.ValidateNames = true;
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    FileStream fileStream = File.Open(dialog.FileName, FileMode.Open, FileAccess.Read);
-                    IExcelDataReader reader = ExcelReaderFactory.CreateBinaryReader(fileStream);
-                    var result = reader.AsDataSet(new ExcelDataSetConfiguration()
-                    {
-                        ConfigureDataTable = (_) => new ExcelDataTableConfiguration()
-                        {
-                            UseHeaderRow = true
-                        }
-                    });
-                    ResultGrid.DataSource = result.Tables[0];
-                }
-            }*/
         }
 
         private void pictureBox1_Resize(object sender, EventArgs e)
