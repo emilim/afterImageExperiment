@@ -241,12 +241,14 @@ namespace koenderink_experiment
 
                 using (Font myFont = new Font("Agency FB", 14))
                 {
-                    e.Graphics.DrawString(seconds.ToString(), myFont, Brushes.Black, new Point(2, 2));
+                    var imgPadding = new Rectangle(0, 0, pictureBox1.Width, pictureBox1.Height);
+                    StringFormat stringFormat = new StringFormat() { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Near };
+                    e.Graphics.DrawString("T: " + seconds.ToString(), myFont, Brushes.Black, imgPadding, stringFormat);
                     //e.Graphics.DrawString(huesExperimental[selected - 1].ToString(), myFont, Brushes.Black, new Point(2, 50));
-                    e.Graphics.DrawString("Prova N: " + (selected).ToString(), myFont, Brushes.Black, new Point(2, 30));
+                    e.Graphics.DrawString("\nHUES N: " + (selected).ToString(), myFont, Brushes.Black, imgPadding, stringFormat);
                     double[] rgbA = { ColorFromHSV(hA, sA, vA).R, ColorFromHSV(hA, sA, vA).G, ColorFromHSV(hA, sA, vA).B };
-                    e.Graphics.DrawString("RGB: " + rgbA[0].ToString() + ", " + rgbA[1].ToString() + ", " + rgbA[2].ToString(), myFont, Brushes.Black, new Point(2, 60));
-                    e.Graphics.DrawString("HSV: " + hA.ToString() + ", " + sA.ToString() + ", " + vA.ToString(), myFont, Brushes.Black, new Point(2, 90));
+                    e.Graphics.DrawString("\n\nRGB: " + rgbA[0].ToString() + ", " + rgbA[1].ToString() + ", " + rgbA[2].ToString(), myFont, Brushes.Black, imgPadding, stringFormat);
+                    e.Graphics.DrawString("\n\n\nHSV: " + ((int)hA).ToString() + ", " + sA.ToString() + ", " + vA.ToString(), myFont, Brushes.Black, imgPadding, stringFormat);
                 }
             }
             else
@@ -284,7 +286,15 @@ namespace koenderink_experiment
                 sA -= 5;
             }
             hA = hA % 360;
-            sA = sA % 100 == 0 ? sA : Math.Abs(sA % 100);
+            if (hA < 0)
+            {
+                hA += 360;
+            }
+            sA = sA % 100;
+            if (sA < 0)
+            {
+                sA += 100;
+            }
 
             if (e.KeyCode == Keys.Return && seconds > 10)
             {
