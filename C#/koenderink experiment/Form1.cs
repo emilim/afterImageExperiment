@@ -187,16 +187,16 @@ namespace koenderink_experiment
                     c++;
                 }
                 i = 0;
-                while (done[i] == true)
+                while (done[selected] == true)
                 {
                     i++;
+                    selected = i < n ? lut[i] : selected;
                     if (i >= n)
                     {
                         MessageBox.Show("All trials are done");
                         break;
                     }
                 }
-                selected = lut[i];
                 randomColor();
             }
         }
@@ -243,7 +243,7 @@ namespace koenderink_experiment
                 {
                     e.Graphics.DrawString(seconds.ToString(), myFont, Brushes.Black, new Point(2, 2));
                     //e.Graphics.DrawString(huesExperimental[selected - 1].ToString(), myFont, Brushes.Black, new Point(2, 50));
-                    e.Graphics.DrawString("Prova N: " + (i + 1).ToString(), myFont, Brushes.Black, new Point(2, 30));
+                    e.Graphics.DrawString("Prova N: " + (selected).ToString(), myFont, Brushes.Black, new Point(2, 30));
                 }
             }
             else
@@ -439,16 +439,22 @@ namespace koenderink_experiment
             expLMS[1, selected] = tempLms[1];
             expLMS[2, selected] = tempLms[2];
             i++;
-            while (done[i] == true)
+            selected = i < n ? lut[i] : selected;
+            while (done[selected] == true)
             {
+                selected = i < n ? lut[i] : selected;
                 i++;
                 if (i >= n)
+                {
+                    i = 0;
+                }
+                if (done.All(x => x == true))
                 {
                     MessageBox.Show("All trials are done");
                     break;
                 }
             }
-            selected = i < n ? lut[i] : selected;
+            
         }
         public void randomColor()
         {
