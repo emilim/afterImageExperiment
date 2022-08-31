@@ -239,7 +239,7 @@ namespace koenderink_experiment
                 //e.Graphics.DrawLine(Pens.Black, Width / 2 - 20, Height / 2, Width / 2 + 20, Height / 2);
                 //e.Graphics.DrawLine(Pens.Black, Width / 2, Height / 2 - 20, Width / 2, Height / 2 + 20);
 
-                using (Font myFont = new Font("Agency FB", 12))
+                using (Font myFont = new Font("Agency FB", 14))
                 {
                     e.Graphics.DrawString(seconds.ToString(), myFont, Brushes.Black, new Point(2, 2));
                     //e.Graphics.DrawString(huesExperimental[selected - 1].ToString(), myFont, Brushes.Black, new Point(2, 50));
@@ -251,9 +251,11 @@ namespace koenderink_experiment
             }
             else
             {
-                using (Font myFont = new Font("Arial", 14))
+                using (Font myFont = new Font("Agency FB", 14))
                 {
-                    e.Graphics.DrawString("Create or load a new experiment from the menu", myFont, Brushes.Black, new Point(pictureBox1.Width/2-250, pictureBox1.Height/2));
+                    var imgPadding = new Rectangle(0, 0, pictureBox1.Width, pictureBox1.Height);
+                    StringFormat stringFormat = new StringFormat() { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+                    e.Graphics.DrawString("Create or load a new experiment from the menu", myFont, Brushes.Black, imgPadding, stringFormat);
                 }
             }
         }

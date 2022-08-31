@@ -88,7 +88,7 @@ namespace koenderink_experiment
         {
             int cx = pictureBox1.Width / 2, cy = pictureBox1.Height / 2;
             
-            int thickness = 20;
+            int thickness = 25;
             var arcLength = n != 0 ? 360 / n : 1;
 
             int innerR = (pictureBox1.Width + pictureBox1.Height)/10;
