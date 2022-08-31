@@ -30,8 +30,8 @@ namespace koenderink_experiment
             ShowInputDialog(ref n);
             n++;
             t.Enabled = true;
-            s = 100;
-            v = 70;
+            s = 40;
+            v = 60;
             sA = s;
             vA = v;
 
@@ -144,8 +144,8 @@ namespace koenderink_experiment
             if (ofd.FileName != "")
             {
                 t.Enabled = true;
-                s = 100;
-                v = 70;
+                s = 40;
+                v = 60;
                 sA = s;
                 vA = v;
                 
@@ -272,11 +272,11 @@ namespace koenderink_experiment
             }
             if (e.KeyCode == Keys.Up && seconds > 10)
             {
-                sA += 10;
+                sA += 5;
             }
             if (e.KeyCode == Keys.Down && seconds > 10)
             {
-                sA -= 10;
+                sA -= 5;
             }
             hA = hA % 360;
             sA = sA % 100 == 0 ? sA : Math.Abs(sA % 100);
