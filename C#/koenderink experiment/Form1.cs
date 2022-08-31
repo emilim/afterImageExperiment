@@ -30,10 +30,10 @@ namespace koenderink_experiment
             ShowInputDialog(ref n);
             n++;
             t.Enabled = true;
-            s = 40;
-            v = 60;
-            sA = s;
-            vA = v;
+            s = 100;
+            v = 100;
+            sA = 40;
+            vA = 60;
 
             //n = Int32.Parse(Interaction.InputBox("How many afterimages you want to see?", "Experiment number sample", "10"));
             
@@ -144,10 +144,10 @@ namespace koenderink_experiment
             if (ofd.FileName != "")
             {
                 t.Enabled = true;
-                s = 40;
-                v = 60;
-                sA = s;
-                vA = v;
+                s = 100;
+                v = 100;
+                sA = 40;
+                vA = 60;
                 
                 string[] lines = System.IO.File.ReadAllLines(ofd.FileName);
                 string[] line = lines[0].Split(',');
