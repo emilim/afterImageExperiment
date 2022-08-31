@@ -33,7 +33,7 @@ namespace koenderink_experiment
             s = 100;
             v = 100;
             sA = 40;
-            vA = 70;
+            vA = 78;
 
             //n = Int32.Parse(Interaction.InputBox("How many afterimages you want to see?", "Experiment number sample", "10"));
             
@@ -147,7 +147,7 @@ namespace koenderink_experiment
                 s = 100;
                 v = 100;
                 sA = 40;
-                vA = 70;
+                vA = 78;
                 
                 string[] lines = System.IO.File.ReadAllLines(ofd.FileName);
                 string[] line = lines[0].Split(',');
