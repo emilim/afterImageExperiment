@@ -31,7 +31,7 @@ namespace koenderink_experiment
             n++;
             t.Enabled = true;
             s = 100;
-            v = 100;
+            v = 70;
             sA = s;
             vA = v;
 
@@ -145,7 +145,7 @@ namespace koenderink_experiment
             {
                 t.Enabled = true;
                 s = 100;
-                v = 100;
+                v = 70;
                 sA = s;
                 vA = v;
                 
