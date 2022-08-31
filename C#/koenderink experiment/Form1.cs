@@ -28,6 +28,7 @@ namespace koenderink_experiment
         private void initialize()
         {
             ShowInputDialog(ref n);
+            n++;
             t.Enabled = true;
             s = 100;
             v = 100;
@@ -45,18 +46,18 @@ namespace koenderink_experiment
                 c++;
             }
             selected = lut[i];
-            hues = new double[n + 1];
-            huesPredicted = new double[n + 1];
-            huesExperimental = new double[n + 1];
-            done = new bool[n + 1];
-            for (int i = 0; i < n + 1; i++)
+            hues = new double[n];
+            huesPredicted = new double[n];
+            huesExperimental = new double[n];
+            done = new bool[n];
+            for (int i = 0; i < n; i++)
             {
                 done[i] = false;
             }
 
-            lms = new double[3, n + 1];
-            suppLMS = new double[3, n + 1];
-            expLMS = new double[3, n + 1];
+            lms = new double[3, n];
+            suppLMS = new double[3, n];
+            expLMS = new double[3, n];
 
             int count = 0;
             for (double i = 0; i <= 360; i += (360.0 / n))
@@ -150,16 +151,16 @@ namespace koenderink_experiment
                 
                 string[] lines = System.IO.File.ReadAllLines(ofd.FileName);
                 string[] line = lines[0].Split(',');
-                n = lines.Length;
-                hues = new double[n - 1];
-                huesPredicted = new double[n - 1];
-                huesExperimental = new double[n - 1];
-                done = new bool[n - 1];
-                lms = new double[3, n - 1];
-                suppLMS = new double[3, n - 1];
-                expLMS = new double[3, n - 1];
+                n = lines.Length - 1;
+                hues = new double[n];
+                huesPredicted = new double[n];
+                huesExperimental = new double[n];
+                done = new bool[n];
+                lms = new double[3, n];
+                suppLMS = new double[3, n];
+                expLMS = new double[3, n];
                 int count = 0;
-                for (int i = 1; i < n; i++)
+                for (int i = 1; i <= n; i++)
                 {
                     line = lines[i].Split(',');
                     hues[count] = double.Parse(line[0]);
@@ -180,7 +181,7 @@ namespace koenderink_experiment
                 lut = new int[n];
                 int c = 0;
                 Random r = new Random();
-                foreach (int i in Enumerable.Range(0, n-1).OrderBy(x => r.Next()))
+                foreach (int i in Enumerable.Range(0, n).OrderBy(x => r.Next()))
                 {
                     lut[c] = i;
                     c++;
@@ -429,7 +430,7 @@ namespace koenderink_experiment
         }
         public void saveImage()
         {
-            done[i] = true;
+            done[selected] = true;
             huesExperimental[selected] = hA;
 
             double[] tempLms = rgb2lms(ColorFromHSV(hA, sA, vA).R, ColorFromHSV(hA, sA, vA).G, ColorFromHSV(hA, sA, vA).B);

@@ -63,7 +63,7 @@ namespace koenderink_experiment
             this.hues = hues;
             this.huesPredicted = huesPredicted;
             this.huesExperimental = huesExperimental;
-            this.n = n-1;
+            this.n = n;
             DataTable dt = MakeNamesTable();
 
             for (int i = 0; i < this.n; i++)
