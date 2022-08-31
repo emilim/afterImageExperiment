@@ -88,7 +88,7 @@ namespace koenderink_experiment
         {
             int cx = pictureBox1.Width / 2, cy = pictureBox1.Height / 2;
             
-            int thickness = 25;
+            int thickness = 30;
             var arcLength = n != 0 ? 360 / n : 1;
 
             int innerR = (pictureBox1.Width + pictureBox1.Height)/10;
@@ -112,30 +112,32 @@ namespace koenderink_experiment
                 var colorHuesExperimental = ColorFromHSV(huesExperimental[i], 100, 100);
 
                 float startAngle = (float)hues[i];
-
-                using (var p = new GraphicsPath())
+                if (innerRect3.Height > 0)
                 {
-                    p.AddArc(outerRect, startAngle, arcLength);
-                    p.AddArc(innerRect, startAngle + arcLength, -arcLength);
-                    p.CloseFigure();
-                    e.Graphics.FillPath(new SolidBrush(colorHues), p);
-                    e.Graphics.DrawPath(new Pen(colorHues), p);
-                }
-                using (var p = new GraphicsPath())
-                {
-                    p.AddArc(outerRect2, startAngle, arcLength);
-                    p.AddArc(innerRect2, startAngle + arcLength, -arcLength);
-                    p.CloseFigure();
-                    e.Graphics.FillPath(new SolidBrush(colorHuesPredicted), p);
-                    e.Graphics.DrawPath(new Pen(colorHuesPredicted), p);
-                }
-                using (var p = new GraphicsPath())
-                {
-                    p.AddArc(outerRect3, startAngle, arcLength);
-                    p.AddArc(innerRect3, startAngle + arcLength, -arcLength);
-                    p.CloseFigure();
-                    e.Graphics.FillPath(new SolidBrush(colorHuesExperimental), p);
-                    e.Graphics.DrawPath(new Pen(colorHuesExperimental), p);
+                    using (var p = new GraphicsPath())
+                    {
+                        p.AddArc(outerRect, startAngle, arcLength);
+                        p.AddArc(innerRect, startAngle + arcLength, -arcLength);
+                        p.CloseFigure();
+                        e.Graphics.FillPath(new SolidBrush(colorHues), p);
+                        e.Graphics.DrawPath(new Pen(colorHues), p);
+                    }
+                    using (var p = new GraphicsPath())
+                    {
+                        p.AddArc(outerRect2, startAngle, arcLength);
+                        p.AddArc(innerRect2, startAngle + arcLength, -arcLength);
+                        p.CloseFigure();
+                        e.Graphics.FillPath(new SolidBrush(colorHuesPredicted), p);
+                        e.Graphics.DrawPath(new Pen(colorHuesPredicted), p);
+                    }
+                    using (var p = new GraphicsPath())
+                    {
+                        p.AddArc(outerRect3, startAngle, arcLength);
+                        p.AddArc(innerRect3, startAngle + arcLength, -arcLength);
+                        p.CloseFigure();
+                        e.Graphics.FillPath(new SolidBrush(colorHuesExperimental), p);
+                        e.Graphics.DrawPath(new Pen(colorHuesExperimental), p);
+                    }
                 }
             }
         }
