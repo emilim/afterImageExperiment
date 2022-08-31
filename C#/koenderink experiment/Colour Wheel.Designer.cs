@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Colour_Wheel));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.printDocument1 = new System.Drawing.Printing.PrintDocument();
@@ -41,16 +42,18 @@
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1038, 24);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 2, 0, 2);
+            this.menuStrip1.Size = new System.Drawing.Size(883, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
             // pictureBox1
             // 
             this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Right;
-            this.pictureBox1.Location = new System.Drawing.Point(404, 24);
+            this.pictureBox1.Location = new System.Drawing.Point(487, 24);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(634, 542);
+            this.pictureBox1.Size = new System.Drawing.Size(396, 485);
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
@@ -61,21 +64,25 @@
             this.ResultGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.ResultGrid.Dock = System.Windows.Forms.DockStyle.Left;
             this.ResultGrid.Location = new System.Drawing.Point(0, 24);
+            this.ResultGrid.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.ResultGrid.Name = "ResultGrid";
             this.ResultGrid.RowHeadersWidth = 51;
             this.ResultGrid.RowTemplate.Height = 29;
-            this.ResultGrid.Size = new System.Drawing.Size(398, 542);
+            this.ResultGrid.Size = new System.Drawing.Size(483, 485);
             this.ResultGrid.TabIndex = 3;
             // 
             // Colour_Wheel
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(5F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1038, 566);
+            this.ClientSize = new System.Drawing.Size(883, 509);
             this.Controls.Add(this.ResultGrid);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.menuStrip1);
+            this.Font = new System.Drawing.Font("Agency FB", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
+            this.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.Name = "Colour_Wheel";
             this.Text = "Colour_Wheel";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

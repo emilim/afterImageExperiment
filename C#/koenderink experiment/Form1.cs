@@ -239,11 +239,14 @@ namespace koenderink_experiment
                 //e.Graphics.DrawLine(Pens.Black, Width / 2 - 20, Height / 2, Width / 2 + 20, Height / 2);
                 //e.Graphics.DrawLine(Pens.Black, Width / 2, Height / 2 - 20, Width / 2, Height / 2 + 20);
 
-                using (Font myFont = new Font("Arial", 14))
+                using (Font myFont = new Font("Agency FB", 12))
                 {
                     e.Graphics.DrawString(seconds.ToString(), myFont, Brushes.Black, new Point(2, 2));
                     //e.Graphics.DrawString(huesExperimental[selected - 1].ToString(), myFont, Brushes.Black, new Point(2, 50));
                     e.Graphics.DrawString("Prova N: " + (selected).ToString(), myFont, Brushes.Black, new Point(2, 30));
+                    double[] rgbA = { ColorFromHSV(hA, sA, vA).R, ColorFromHSV(hA, sA, vA).G, ColorFromHSV(hA, sA, vA).B };
+                    e.Graphics.DrawString("RGB: " + rgbA[0].ToString() + ", " + rgbA[1].ToString() + ", " + rgbA[2].ToString(), myFont, Brushes.Black, new Point(2, 60));
+                    e.Graphics.DrawString("HSV: " + hA.ToString() + ", " + sA.ToString() + ", " + vA.ToString(), myFont, Brushes.Black, new Point(2, 90));
                 }
             }
             else
