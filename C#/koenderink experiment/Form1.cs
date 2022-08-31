@@ -60,7 +60,7 @@ namespace koenderink_experiment
             expLMS = new double[3, n];
 
             int count = 0;
-            for (double i = 0; i <= 360; i += (360.0 / n))
+            for (double i = 0; i <= 360; i += (360.0 / n+0.5))
             {
                 hues[count] = i;
                 huesPredicted[count] = (i + 180) % 360;
